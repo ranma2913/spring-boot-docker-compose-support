@@ -1,0 +1,77 @@
+# yml configuration files are now recommended for SpringBoot.
+# See: https://www.baeldung.com/spring-yaml-vs-properties
+# Spring
+spring:
+  application:
+    # spring.application.name needs to be the artifactId of the application project. This is used to identify the project in SPLUNK as well as SCAR
+    name: spring-boot_docker-compose-support_example
+  datasource:
+    # fix `Caused by: com.mysql.cj.exceptions.UnableToConnectException: Public Key Retrieval is not allowed` when using local docker container.
+    url: jdbc:mysql://${spring.datasource.host}/${spring.datasource.database}?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    ####################################################################################################################
+    # Hikari Pool Settings
+    hikari:
+      #maximum number of milliseconds that a client will wait for a connection
+      connection-timeout: 20000
+      #minimum number of idle connections maintained by HikariCP in a connection pool
+      minimum-idle: 0
+      #maximum pool size
+      maximum-pool-size: 100
+      #maximum idle time for connection
+      idle-timeout: 40000
+      # maximum lifetime in milliseconds of a connection in the pool after it is closed.
+      max-lifetime: 1800000
+      #default auto-commit behavior.
+      auto-commit: true
+  data:
+    # Disable Redis Repositories so that MySQL (or other JPA) Repositories can be Autowired without conflict.
+    # Use when Redis is for Cache Only.
+    redis.repositories.enabled: false
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      password: ${SPRING_DATA_REDIS_PASSWORD:12345678}
+      lettuce:
+        shutdown-timeout: 100ms
+        pool:
+          max-active: 100
+          max-idle: 10
+          min-idle: 1
+          max-wait: -1ms
+  jpa:
+    # Register OpenEntityManagerInViewInterceptor. Binds a JPA EntityManager to the thread for the entire processing of the request.
+    # There could be performance impacts. Choose Wisely = https://www.baeldung.com/spring-open-session-in-view#choose-wisely
+    open-in-view: true
+    properties:
+      hibernate:
+        format_sql: false
+        generate_statistics: false
+        dialect: org.hibernate.dialect.MySQLDialect
+        storage_engine: innodb
+        jdbc:
+          batch_size: ${JDBC_BATCH_SIZE:50}
+          batch_versioned_date: true
+        order_inserts: true
+        order_deletes: true
+        order_updates: true
+  ######################################################################################################################
+  # Docker Compose Feature https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.docker-compose
+  # Docker Compose Properties: https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.docker-compose
+  docker:
+    compose:
+      # disable by default. Enabled in 'local' profile.
+      enabled: false
+########################################################################################################################
+# Logging
+logging:
+  level:
+    # Read about logging groups here: https://www.baeldung.com/spring-boot-log-groups
+    web: ${LOGGING_LEVEL_WEB:info}
+    sql: ${LOGGING_LEVEL_SQL:info}
+  file:
+    path: logs
+  pattern:
+    console: '%date{yyyy-MM-dd HH:mm:ss.SSS} [%10.10thread] %highlight(${%level:-%5p}) %cyan(%logger{50}.%.-20method:%line) :: %msg %n'
+#
+########################################################################################################################
