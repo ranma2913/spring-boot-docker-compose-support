@@ -3,6 +3,11 @@ spring:
   cloud.vault:
     enabled: false
 
+  # DockerComposeLifecycleManager#start() is called once for the bootstrap phase and once for the application phase when using the spring-cloud-starter-bootstrap dependency.
+  docker:
+    compose:
+      enabled: false # disable during bootstrap phase
+
 logging:
   level:
     org:
@@ -11,3 +16,4 @@ logging:
           docker:
             compose:
               lifecycle: trace
+

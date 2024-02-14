@@ -47,7 +47,6 @@ spring:
       hibernate:
         format_sql: false
         generate_statistics: false
-        dialect: org.hibernate.dialect.MySQLDialect
         storage_engine: innodb
         jdbc:
           batch_size: ${JDBC_BATCH_SIZE:50}
@@ -55,13 +54,6 @@ spring:
         order_inserts: true
         order_deletes: true
         order_updates: true
-  ######################################################################################################################
-  # Docker Compose Feature https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.docker-compose
-  # Docker Compose Properties: https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.docker-compose
-  docker:
-    compose:
-      # disable by default. Enabled in 'local' profile.
-      enabled: false
 ########################################################################################################################
 # Logging
 logging:
@@ -75,3 +67,11 @@ logging:
     console: '%date{yyyy-MM-dd HH:mm:ss.SSS} [%10.10thread] %highlight(${%level:-%5p}) %cyan(%logger{50}.%.-20method:%line) :: %msg %n'
 #
 ########################################################################################################################
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  cloudfoundry:
+    enabled: false # Resolve CVE-2023-20873
