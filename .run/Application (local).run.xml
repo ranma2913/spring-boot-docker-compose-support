@@ -5,7 +5,7 @@
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources"/>
     <module name="spring-boot_docker-compose-support_example"/>
     <option name="SPRING_BOOT_MAIN_CLASS"
-      value="com.ranma2913.springboot.dockercomposesupportexample.SpringBootDockerComposeSupportExampleApplication"/>
+      value="com.ranma2913.springboot.dockercomposesupportexample.Application"/>
     <method v="2">
       <option name="Make" enabled="true"/>
     </method>
